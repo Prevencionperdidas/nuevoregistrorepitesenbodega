@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#0058A3">
+<title>Registro Bodega Repites</title>
+<style>
+  :root{--azul:#0058A3;--azul2:#004280;--amarillo:#FFDB00;--ok:#1E8E3E;--warn:#E37400;--err:#C5221F;--bg:#F2F5F9;--card:#fff;--txt:#111;--mut:#5F6B7A;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans",Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+  header{background:var(--azul);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  .shield{width:40px;height:44px;background:var(--amarillo);color:var(--azul);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0,100% 15%,100% 60%,50% 100%,0 60%,0 15%)}
+  header h1{font-size:17px;line-height:1.1}
+  header small{display:block;font-size:11px;opacity:.85;font-weight:400}
+  #net{margin-left:auto;font-size:11px;padding:4px 8px;border-radius:12px;background:var(--ok);white-space:nowrap}
+  #net.off{background:var(--err)}
+  main{max-width:520px;margin:0 auto;padding:14px 16px 40px}
+  .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px}
+  .user{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mut)}
+  .user input{flex:1;padding:8px 10px;border:1px solid #CCD3DC;border-radius:8px;font-size:14px}
+  .campo{margin-bottom:14px}
+  .campo label{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;margin-bottom:6px;color:var(--azul2)}
+  .num{background:var(--azul);color:var(--amarillo);width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+  .tag{margin-left:auto;font-size:11px;font-weight:600;color:var(--mut)}
+  .campo input{width:100%;padding:14px 12px;font-size:20px;font-weight:600;letter-spacing:.5px;border:2px solid #CCD3DC;border-radius:10px;outline:none;text-transform:uppercase;transition:border-color .15s,background .15s}
+  .campo input:focus{border-color:var(--azul);background:#EEF5FC}
+  .campo input.okv{border-color:var(--ok)}
+  .campo input.bad{border-color:var(--err);background:#FDECEA}
+  .btns{display:flex;gap:10px}
+  button{border:none;border-radius:10px;font-size:16px;font-weight:700;padding:14px;cursor:pointer}
+  .primary{flex:1;background:var(--amarillo);color:var(--azul2)}
+  .primary:active{transform:scale(.98)}
+  .ghost{background:#E3E8EF;color:var(--txt)}
+  #msg{display:none;margin-top:12px;padding:12px;border-radius:10px;font-weight:600;font-size:15px;text-align:center}
+  #msg.ok{display:block;background:#E6F4EA;color:var(--ok)}
+  #msg.warn{display:block;background:#FEF3E0;color:var(--warn)}
+  #msg.err{display:block;background:#FDECEA;color:var(--err)}
+  .stats{display:flex;gap:10px;margin-bottom:14px}
+  .stat{flex:1;background:var(--card);border-radius:12px;padding:10px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .stat b{display:block;font-size:24px;color:var(--azul)}
+  .stat span{font-size:11px;color:var(--mut)}
+  .stat.pend b{color:var(--warn)}
+  h2{font-size:14px;color:var(--azul2);margin-bottom:10px;display:flex;align-items:center}
+  h2 button{margin-left:auto;font-size:12px;padding:6px 10px;background:#E3E8EF}
+  .item{border-bottom:1px solid #EDF0F4;padding:9px 0;font-size:13px;display:grid;grid-template-columns:1fr auto;gap:2px 8px}
+  .item:last-child{border-bottom:none}
+  .item .o{font-weight:700;word-break:break-all}
+  .item .d{color:var(--mut);font-size:12px}
+  .item .s{font-size:11px;font-weight:700;align-self:start;padding:2px 6px;border-radius:6px;background:#E6F4EA;color:var(--ok)}
+  .item .s.p{background:#FEF3E0;color:var(--warn)}
+  .item .s.r{background:#FDECEA;color:var(--err)}
+  .empty{color:var(--mut);font-size:13px;text-align:center;padding:10px}
+  .search{display:flex;gap:8px;margin-bottom:8px}
+  .search input{flex:1;padding:10px;border:1px solid #CCD3DC;border-radius:8px;font-size:15px;text-transform:uppercase}
+  .search button{padding:10px 14px;font-size:14px;background:var(--azul);color:#fff}
+</style>
+</head>
+<body>
+<header>
+  <div class="shield">PPS</div>
+  <div><h1>Registro Bodega Repites<small>IKEA CD Chile · Prevención de Pérdidas</small></h1></div>
+  <div id="net">En línea</div>
+</header>
+
+<main>
+  <div class="card user">
+    <span>👤</span><input id="usuario" placeholder="Nombre o RUT del operador" autocomplete="off">
+  </div>
+
+  <div class="card">
+    <form id="frm" autocomplete="off" onsubmit="return false">
+      <div class="campo">
+        <label for="olpn"><span class="num">1</span> OLPN <span class="tag">📷 Escanear</span></label>
+        <input id="olpn" inputmode="none" placeholder="Escanee OLPN" enterkeyhint="next">
+      </div>
+      <div class="campo">
+        <label for="sku"><span class="num">2</span> SKU <span class="tag">⌨️ Digitar</span></label>
+        <input id="sku" inputmode="numeric" placeholder="Digite SKU" enterkeyhint="next">
+      </div>
+      <div class="campo">
+        <label for="bodega"><span class="num">3</span> Bodega de almacenamiento <span class="tag">📷 Escanear</span></label>
+        <input id="bodega" inputmode="none" placeholder="Escanee ubicación / bodega" enterkeyhint="done">
+      </div>
+      <div class="btns">
+        <button type="button" class="ghost" id="btnLimpiar">Limpiar</button>
+        <button type="button" class="primary" id="btnGuardar">REGISTRAR</button>
+      </div>
+      <div id="msg"></div>
+    </form>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="stHoy">0</b><span>Registrados hoy (este equipo)</span></div>
+    <div class="stat pend"><b id="stPend">0</b><span>Pendientes de envío</span></div>
+  </div>
+
+  <div class="card">
+    <h2>Últimos registros <button id="btnSync" type="button">↻ Sincronizar</button></h2>
+    <div id="lista"><div class="empty">Sin registros aún</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Buscar (OLPN, SKU o bodega)</h2>
+    <div class="search"><input id="q" placeholder="Escanee o digite"><button type="button" id="btnBuscar">Buscar</button></div>
+    <div id="resBuscar"></div>
+  </div>
+</main>
+
+<script>
+/* ====== CONFIGURACIÓN ====== */
+const API_URL = 'PEGAR_AQUI_URL_DE_APPS_SCRIPT/exec';
+/* =========================== */
+
+const LS_QUEUE = 'rbr_cola', LS_HIST = 'rbr_hist', LS_USER = 'rbr_usuario';
+const $ = id => document.getElementById(id);
+const fOlpn = $('olpn'), fSku = $('sku'), fBod = $('bodega');
+
+function ls(k, def){ try{ return JSON.parse(localStorage.getItem(k)) ?? def; }catch(e){ return def; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function hoyStr(d){ return new Date(d).toLocaleDateString('es-CL'); }
+
+/* ---- JSONP ---- */
+function jsonp(params, timeout = 15000){
+  return new Promise((res, rej) => {
+    const cb = 'cb_' + uid();
+    const s = document.createElement('script');
+    const t = setTimeout(() => { cleanup(); rej(new Error('timeout')); }, timeout);
+    function cleanup(){ clearTimeout(t); delete window[cb]; s.remove(); }
+    window[cb] = data => { cleanup(); res(data); };
+    s.onerror = () => { cleanup(); rej(new Error('red')); };
+    s.src = API_URL + '?' + new URLSearchParams({...params, callback: cb});
+    document.body.appendChild(s);
+  });
+}
+
+/* ---- Feedback ---- */
+let audio;
+function beep(ok = true){
+  try{
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.frequency.value = ok ? 1200 : 300; g.gain.value = .15;
+    o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime + (ok ? .12 : .35));
+  }catch(e){}
+  if (navigator.vibrate) navigator.vibrate(ok ? 80 : [150,80,150]);
+}
+let msgT;
+function msg(txt, tipo){
+  const m = $('msg'); m.className = tipo; m.textContent = txt;
+  clearTimeout(msgT); msgT = setTimeout(() => m.className = '', 3500);
+}
+
+/* ---- Flujo de escaneo: Enter avanza ---- */
+function limpiarTexto(v){ return v.replace(/[\r\n\t]/g,'').trim().toUpperCase(); }
+fOlpn.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); if (validar(fOlpn)) fSku.focus(); } });
+fSku.addEventListener('keydown',  e => { if (e.key === 'Enter'){ e.preventDefault(); if (validar(fSku)) fBod.focus(); } });
+fBod.addEventListener('keydown',  e => { if (e.key === 'Enter'){ e.preventDefault(); guardar(); } });
+fSku.addEventListener('input', () => { fSku.value = fSku.value.replace(/[^0-9A-Za-z.\-]/g,''); });
+[fOlpn, fSku, fBod].forEach(f => f.addEventListener('input', () => f.classList.remove('bad','okv')));
+
+function validar(f){
+  f.value = limpiarTexto(f.value);
+  if (!f.value){ f.classList.add('bad'); beep(false); return false; }
+  if (f === fOlpn && f.value === fBod.value && f.value){ f.classList.add('bad'); msg('OLPN y bodega no pueden ser iguales', 'err'); beep(false); return false; }
+  f.classList.remove('bad'); f.classList.add('okv'); return true;
+}
+
+function limpiar(){
+  [fOlpn, fSku, fBod].forEach(f => { f.value = ''; f.classList.remove('bad','okv'); });
+  fOlpn.focus();
+}
+
+/* ---- Guardar ---- */
+function guardar(){
+  const usuario = $('usuario').value.trim();
+  if (!usuario){ msg('Ingrese su nombre o RUT arriba', 'err'); beep(false); $('usuario').focus(); return; }
+  for (const f of [fOlpn, fSku, fBod]) if (!validar(f)){ f.focus(); msg('Complete todos los campos', 'err'); return; }
+  if (fBod.value === fOlpn.value){ msg('La bodega no puede ser igual al OLPN', 'err'); beep(false); fBod.focus(); return; }
+
+  const reg = { id: uid(), ts: Date.now(), olpn: fOlpn.value, sku: fSku.value, bodega: fBod.value, usuario, estado: 'pend' };
+
+  // aviso local de OLPN ya registrado hoy en este equipo
+  const hist = ls(LS_HIST, []);
+  const yaLocal = hist.some(h => h.olpn === reg.olpn);
+
+  hist.unshift(reg); lsSet(LS_HIST, hist.slice(0, 300));
+  const cola = ls(LS_QUEUE, []); cola.push(reg); lsSet(LS_QUEUE, cola);
+
+  beep(true);
+  msg(yaLocal ? `⚠ OLPN ${reg.olpn} ya se había registrado — guardado igual` : `✔ Guardado: ${reg.olpn} → ${reg.bodega}`, yaLocal ? 'warn' : 'ok');
+  limpiar(); render(); sincronizar();
+}
+
+/* ---- Sincronización con cola offline ---- */
+let syncing = false;
+async function sincronizar(){
+  if (syncing) return;
+  if (API_URL.startsWith('PEGAR')) { setNet(false, 'Sin configurar'); return; }
+  syncing = true;
+  let cola = ls(LS_QUEUE, []);
+  while (cola.length){
+    const r = cola[0];
+    try{
+      const res = await jsonp({ action:'registrar', id:r.id, ts:r.ts, olpn:r.olpn, sku:r.sku, bodega:r.bodega, usuario:r.usuario });
+      if (!res.ok) throw new Error(res.error || 'error');
+      marcar(r.id, res.repetido ? 'rep' : 'ok');
+      if (res.repetido) msg(`⚠ OLPN ${r.olpn} ya existía en la planilla (marcado como repetido)`, 'warn');
+      cola = ls(LS_QUEUE, []).filter(x => x.id !== r.id); lsSet(LS_QUEUE, cola);
+      setNet(true);
+    }catch(e){
+      setNet(false); break;
+    }
+  }
+  syncing = false; render();
+}
+function marcar(id, estado){
+  const h = ls(LS_HIST, []); const it = h.find(x => x.id === id);
+  if (it){ it.estado = estado; lsSet(LS_HIST, h); }
+}
+function setNet(on, txt){ const n = $('net'); n.className = on ? '' : 'off'; n.textContent = txt || (on ? 'En línea' : 'Sin conexión'); }
+
+/* ---- Render ---- */
+function render(){
+  const hist = ls(LS_HIST, []), hoy = hoyStr(Date.now());
+  $('stHoy').textContent = hist.filter(h => hoyStr(h.ts) === hoy).length;
+  $('stPend').textContent = ls(LS_QUEUE, []).length;
+  const ult = hist.slice(0, 15);
+  $('lista').innerHTML = ult.length ? ult.map(itemHTML).join('') : '<div class="empty">Sin registros aún</div>';
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function itemHTML(r){
+  const est = r.estado === 'pend' ? '<span class="s p">PENDIENTE</span>' : r.estado === 'rep' ? '<span class="s r">REPETIDO</span>' : '<span class="s">ENVIADO</span>';
+  const hora = r.ts ? new Date(r.ts).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}) : (r.fecha + ' ' + r.hora);
+  return `<div class="item"><div class="o">${esc(r.olpn)}</div>${r.estado ? est : (r.repetido==='SÍ'?'<span class="s r">REPETIDO</span>':'')}
+    <div class="d">SKU ${esc(r.sku)} · Bodega <b>${esc(r.bodega)}</b> · ${esc(hora)}${r.usuario ? ' · ' + esc(r.usuario) : ''}</div></div>`;
+}
+
+/* ---- Buscar en planilla ---- */
+async function buscar(){
+  const q = limpiarTexto($('q').value); if (!q) return;
+  $('resBuscar').innerHTML = '<div class="empty">Buscando…</div>';
+  try{
+    const res = await jsonp({ action:'buscar', q });
+    $('resBuscar').innerHTML = res.registros && res.registros.length ? res.registros.map(itemHTML).join('') : '<div class="empty">Sin resultados</div>';
+  }catch(e){ $('resBuscar').innerHTML = '<div class="empty">Sin conexión con la planilla</div>'; }
+}
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); buscar(); } });
+
+/* ---- Eventos ---- */
+$('btnGuardar').onclick = guardar;
+$('btnLimpiar').onclick = limpiar;
+$('btnSync').onclick = sincronizar;
+$('btnBuscar').onclick = buscar;
+$('usuario').value = ls(LS_USER, '');
+$('usuario').addEventListener('change', e => lsSet(LS_USER, e.target.value.trim()));
+window.addEventListener('online', sincronizar);
+setInterval(sincronizar, 30000);
+
+render(); sincronizar();
+($('usuario').value ? fOlpn : $('usuario')).focus();
+</script>
+</body>
+</html>
